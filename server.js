@@ -92,12 +92,16 @@ app.use(express.static('public'));
 
 app.get('/images', async (req, res) => {
   try {
+    // 获取图片列表
     const images = await s3Client.send(new ListObjectsCommand({ Bucket: BUCKET_NAME, Prefix: IMAGE_DIR }));
-    // 对图片列表按 LastModified 时间进行排序，最旧的在最前面
+    
+    // 按 LastModified 时间进行排序，最旧的在最前面
     images.Contents.sort((a, b) => new Date(a.LastModified) - new Date(b.LastModified));
-    const imageUrls = await Promise.all(images.Contents.map(async (item) => {
+
+    // 生成缩略图和URL
+    const imageUrlsPromises = images.Contents.map(async (item) => {
       const itemExtension = path.extname(item.Key).toLowerCase();
-      const isFile = item.Key.split('/').length === 2;
+      const isFile = item.Key.split('/').length === 2; // 确认是文件而不是文件夹
       if (!validImageExtensions.includes(itemExtension) || !isFile) {
         return null;
       }
@@ -106,13 +110,42 @@ app.get('/images', async (req, res) => {
         original: `${IMAGE_BASE_URL}/${item.Key}`,
         thumbnail: `${IMAGE_BASE_URL}/${thumbnailKey}`,
       };
-    }));
+    });
+
+    const imageUrls = await Promise.all(imageUrlsPromises);
+
+    // 过滤掉 null 值并返回
     res.json(imageUrls.filter(url => url !== null));
   } catch (error) {
     console.error('Error loading images:', error);
     res.status(500).send('Error loading images');
   }
 });
+
+
+// app.get('/images', async (req, res) => {
+//   try {
+//     const images = await s3Client.send(new ListObjectsCommand({ Bucket: BUCKET_NAME, Prefix: IMAGE_DIR }));
+//     // 对图片列表按 LastModified 时间进行排序，最旧的在最前面
+//     images.Contents.sort((a, b) => new Date(a.LastModified) - new Date(b.LastModified));
+//     const imageUrls = await Promise.all(images.Contents.map(async (item) => {
+//       const itemExtension = path.extname(item.Key).toLowerCase();
+//       const isFile = item.Key.split('/').length === 2;
+//       if (!validImageExtensions.includes(itemExtension) || !isFile) {
+//         return null;
+//       }
+//       const thumbnailKey = await checkAndCreateThumbnail(item.Key);
+//       return {
+//         original: `${IMAGE_BASE_URL}/${item.Key}`,
+//         thumbnail: `${IMAGE_BASE_URL}/${thumbnailKey}`,
+//       };
+//     }));
+//     res.json(imageUrls.filter(url => url !== null));
+//   } catch (error) {
+//     console.error('Error loading images:', error);
+//     res.status(500).send('Error loading images');
+//   }
+// });
 
 app.get('/exif/:key', async (req, res) => {
   const key = decodeURIComponent(req.params.key);

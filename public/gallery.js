@@ -197,8 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.json())
                 .then(data => {
                     if (!exifController.signal.aborted) {
+                        const shutterSpeed = convertExposureTimeToShutterSpeed(data.ExposureTime);
                         exifInfo.innerHTML = `
-                            <p>光圈: ${data.FNumber ? `f/${data.FNumber}` : 'N/A'}  ·  快门: ${data.ExposureTime ? `${data.ExposureTime}s` : 'N/A'}  ·  ISO: ${data.ISO ? data.ISO : 'N/A'}</p>
+                            <p>光圈: ${data.FNumber ? `f/${data.FNumber}` : 'N/A'}  ·  快门: ${shutterSpeed}  ·  ISO: ${data.ISO ? data.ISO : 'N/A'}</p>
                         `;
                     }
                 })
@@ -292,4 +293,33 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    function convertExposureTimeToShutterSpeed(exposureTime) {
+        if (typeof exposureTime === 'number') {
+          // 处理浮点数形式的曝光时间
+          if (exposureTime > 1) {
+            return `${exposureTime} sec`;
+          }
+          const denominator = Math.round(1 / exposureTime);
+          return `1/${denominator}`;
+        } else if (typeof exposureTime === 'string') {
+          // 处理字符串形式的曝光时间
+          if (exposureTime.includes('/')) {
+            const [numerator, denominator] = exposureTime.split('/').map(Number);
+            if (numerator === 1 && !isNaN(denominator)) {
+              return `1/${denominator}`;
+            }
+          } else {
+            const timeInSeconds = parseFloat(exposureTime);
+            if (!isNaN(timeInSeconds)) {
+              if (timeInSeconds > 1) {
+                return `${timeInSeconds} sec`;
+              }
+              const denominator = Math.round(1 / timeInSeconds);
+              return `1/${denominator}`;
+            }
+          }
+        }
+        return 'N/A';
+      }
 });
