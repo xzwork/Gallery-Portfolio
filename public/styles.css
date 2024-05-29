@@ -18,7 +18,7 @@ body {
 
 header {
   width: 100%;
-  background-color: #004d40; /* 深绿色 */
+  background-color: #BC271A; /* 深绿色 */
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -63,7 +63,7 @@ header button {
 
 footer {
   width: 100%;
-  background-color: #004d40; /* 深绿色 */
+  background-color: #BC271A; /* 深绿色 */
   color: white;
   text-align: center;
   padding: 10px 0;
@@ -80,7 +80,7 @@ footer a {
 .load-more {
   padding: 10px 20px;
   margin: 20px 0;
-  background-color: #004d40; /* 深绿色 */
+  background-color: #BC271A; /* 深绿色 */
   color: white;
   border: none;
   border-radius: 5px;
