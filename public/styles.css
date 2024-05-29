@@ -18,7 +18,7 @@ body {
 
 header {
   width: 100%;
-  background-color: #BC271A; /* 深绿色 */
+  background-color: #A2D1D0; /* 深绿色 */
   color: white;
   padding: 15px 20px;
   display: flex;
@@ -33,7 +33,7 @@ header {
     padding 0.3s ease-in-out;
 }
 
-header h1 {
+header h2 {
   margin: 0;
   font-size: 2em;
   transition: font-size 0.3s ease-in-out;
@@ -63,7 +63,7 @@ header button {
 
 footer {
   width: 100%;
-  background-color: #BC271A; /* 深绿色 */
+  background-color: #A2D1D0; /* 深绿色 */
   color: white;
   text-align: center;
   padding: 10px 0;
@@ -80,7 +80,7 @@ footer a {
 .load-more {
   padding: 10px 20px;
   margin: 20px 0;
-  background-color: #BC271A; /* 深绿色 */
+  background-color: #A2D1D0; /* 深绿色 */
   color: white;
   border: none;
   border-radius: 5px;
@@ -173,7 +173,7 @@ body.dark footer {
 @media (min-width: 600px) and (max-width: 1200px) {
   header {
     height: 2.085em;
-    padding: 15px 20px;
+    padding: 10px 20px;
   }
   header h1 {
     font-size: 1.75em;
@@ -189,7 +189,7 @@ body.dark footer {
 @media (min-width: 1200px) {
   header {
     height: 2.1em;
-    padding: 20px 30px;
+    padding: 10px 30px;
   }
   header h1 {
     font-size: 2em;
