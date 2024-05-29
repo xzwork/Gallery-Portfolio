@@ -93,6 +93,8 @@ app.use(express.static('public'));
 app.get('/images', async (req, res) => {
   try {
     const images = await s3Client.send(new ListObjectsCommand({ Bucket: BUCKET_NAME, Prefix: IMAGE_DIR }));
+    // 对图片列表按 LastModified 时间进行排序，最旧的在最前面
+    images.Contents.sort((a, b) => new Date(a.LastModified) - new Date(b.LastModified));
     const imageUrls = await Promise.all(images.Contents.map(async (item) => {
       const itemExtension = path.extname(item.Key).toLowerCase();
       const isFile = item.Key.split('/').length === 2;
